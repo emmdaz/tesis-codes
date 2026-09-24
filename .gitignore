@@ -1,0 +1,7 @@
+# OS jukfiles
+[Tt]humbs.db
+*.DS_Store
+
+# .ipynb_checkpoints 
+*.orbits-integration/.ipynb_checkpoints
+*.rotation-curve/.ipynb_checkpoints
