@@ -216,3 +216,28 @@ def RinvV(state, omega, ts):
     static[:, 5] = state[:,5]
 
     return static
+
+def cosine_potential(v): 
+    """ Definimos las constantes """
+    
+    N = 15                 # Define la forma del brazo. Se hace que N >> 1 en los modelos?
+    Rs = 2                  # Distancia galactocéntrica en la que el patrón espiral comienza
+    i0 = 10*np.pi/180       # Pitch angle
+    A = 200/100             # Amplitud en km^2 s^-2 kpc^-1. Multiplicado por 1/100 para que coincidan las unidades
+    epsilon_s = 1/5         # Inverso de la longitud de escala radial
+
+    x, y, z = v[0], v[1], v[2]
+    R = np.sqrt(x**2 + y**2)
+    
+    Theta = 2/(N*np.tan(i0))*np.log(1+(R/Rs)**N)
+    
+    cos_cx = 2 - epsilon_s*(x**2 - y**2)/R - (x**2 - y**2)/R**2 + 4*x*y*R**(N-2)/(np.tan(i0)*(Rs**N + R**N))
+    sin_cx = y - epsilon_s*(x**2)*y/R - (x**2 - y**2)*x*R**(N-2)/(np.tan(i0)*(Rs**N + R**N)) - (y*x**2)/(R**2)
+    acx = (A/R)*np.exp(-epsilon_s*R)*(x*np.cos(Theta)*cos_cx + 2*np.sin(Theta)*sin_cx)
+
+    cos_cy = -2 - epsilon_s*(x**2 - y**2)/R - (x**2 - y**2)/R**2 + 4*x*y*R**(N-2)/(np.tan(i0)*(Rs**N + R**N))
+    sin_cy = x - epsilon_s*x*y**2/R - (x**2 - y**2)*y*R**(N-2)/(np.tan(i0)*(Rs**N + R**N)) - x*y**2/R**2
+    acy = (A/R)*np.exp(-epsilon_s*R)*(y*np.cos(Theta)*cos_cy + 2*np.sin(Theta)*sin_cy)
+
+    return acx, acy
+
